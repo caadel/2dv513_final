@@ -1,0 +1,63 @@
+<div class="">
+  <nav>
+    <a class="home" href="/">Home</a>
+    {{#if album}}
+    <a class="back" href="/albums">Back</a>
+    {{/if}}
+    {{#unless album}}
+    <a class="back" href="/songs">Back</a>
+    {{/unless}}
+  </nav>
+
+  {{#if status}}
+  {{#if error}}
+  <span class="status error">{{status}}</span>
+  {{/if}}
+  {{#unless error}}
+  <span class="status">{{status}}</span>
+  {{/unless}}
+  {{/if}}
+
+  {{#if album}}
+  <h2>Add a new album</h2>
+  <form method="POST" class="create-edit-form">
+    <label for="name">Name</label>
+    <input type="text" name="name">
+
+    <label for="artist">Artist</label>
+    <input type="text" name="artist">
+
+    <label for="price">Price</label>
+    <input type="number" name="price">
+
+    <label for="date">Release Date</label>
+    <input type="date" name="date">
+
+    <label class="check-container">In stock
+      <input type="checkbox" name="in_stock">
+      <span class="checkmark"></span>
+    </label>
+
+    <input type="submit" name="submit" value="Submit Album">
+  </form>
+  {{/if}}
+
+  {{#if song}}
+  <h2>Add a new song</h2>
+  <form method="POST" class="create-edit-form">
+    <label for="title">Title</label>
+    <input type="text" name="title">
+
+    <label for="length">Length</label>
+    <input type="number" name="length">
+
+    <label for="album_id">Album ID</label>
+    <input type="number" name="album_id">
+
+    <input type="submit" name="submit" value="Submit Song">
+  </form>
+  {{/if}}
+
+
+
+</div>

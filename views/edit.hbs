@@ -1,0 +1,25 @@
+<div class="box-semi-trans form-container">
+  <h1>{{title}}</h1>
+
+  <div class="tips">
+    <h2>Keep in mind...</h2>
+    <p>Treat this form the same as when you created the snippet; meaning that tags need to be comma-separated.</p>
+    <p><strong>IMPORTANT:</strong> Clicking delete will remove you snippet permanently!</p>
+  </div>
+
+  <form method="POST" class="create-edit-form">
+    <label for="title">Title</label>
+    <input type="text" name="title" value="{{snippetTitle}}">
+
+    <label for="tags">Tags</label>
+    <input type="text" name="tags" value="{{tags}}">
+
+    <label for="code">Code snippet</label>
+    <textarea rows="5" cols="60" name="code">{{snippetBody}}</textarea>
+
+    <input type="hidden" name="id" value="{{snippetId}}">
+    <input class="form-btn-submit" type="submit" name="formUsed" value="UPDATE snippet">
+    <input class="form-btn-delete" type="submit" name="formUsed" value="DELETE snippet">
+  </form>
+
+</div>

@@ -14,14 +14,14 @@
 
 <div class="list-container">
   {{#each data}}
-  <div class="list-item">
+  <a href="/songs/{{this.id}}" class="list-item">
     <span class="list-id">{{this.id}}</span>
     <span class="list-title">{{this.title}}</span>
     <span class="list-time">{{this.length}}</span>
     <span class="list-artist">{{this.artist}}</span>
     <span class="list-album-name">{{this.album_name}}</span>
     <span class="list-id">{{this.album_id}}</span>
-  </div>
+  </a>
   {{else}}
   <p class="empty">No content</p>
   {{/each}}

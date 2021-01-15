@@ -136,6 +136,14 @@ nav a:hover {
   background-color: rgb(180, 180, 180);
 }
 
+.list-container a:nth-child(even) {
+  background-color: rgb(180, 180, 180);
+}
+
+a.list-item:hover {
+  outline: 3px solid black;
+}
+
 .list-item {
   background-color: rgb(240, 240, 240);
 }

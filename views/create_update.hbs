@@ -19,6 +19,33 @@
   {{/if}}
 
   {{#if album}}
+  {{#if update}}
+  <h2>Update an album</h2>
+  <form method="POST" class="create-edit-form">
+    <label for="name">Name</label>
+    <input type="text" name="name" value="{{data.name}}">
+
+    <label for="artist">Artist</label>
+    <input type="text" name="artist" value="{{data.artist}}">
+
+    <label for="price">Price</label>
+    <input type="number" name="price" value="{{data.price}}">
+
+    <label for="release_date">Release Date</label>
+    <input type="date" name="release_date" value="{{data.release_date}}">
+
+    <label class="check-container">In stock
+      {{#if checked}}
+      <input type="checkbox" name="in_stock" checked>
+      {{else}}
+      <input type="checkbox" name="in_stock">
+      {{/if}}
+      <span class="checkmark"></span>
+    </label>
+
+    <input type="submit" name="submit" value="Update Album">
+  </form>
+  {{else}}
   <h2>Add a new album</h2>
   <form method="POST" class="create-edit-form">
     <label for="name">Name</label>
@@ -41,8 +68,24 @@
     <input type="submit" name="submit" value="Submit Album">
   </form>
   {{/if}}
+  {{/if}}
 
   {{#if song}}
+  {{#if update}}
+  <h2>Update a song</h2>
+  <form method="POST" class="create-edit-form">
+    <label for="title">Title</label>
+    <input type="text" name="title" value="{{data.title}}">
+
+    <label for="length">Length</label>
+    <input type="number" name="length" value="{{data.length}}">
+
+    <label for="album_id">Album ID</label>
+    <input type="number" name="album_id" value="{{data.album_id}}">
+
+    <input type="submit" name="submit" value="Update Song">
+  </form>
+  {{else}}
   <h2>Add a new song</h2>
   <form method="POST" class="create-edit-form">
     <label for="title">Title</label>
@@ -57,7 +100,6 @@
     <input type="submit" name="submit" value="Submit Song">
   </form>
   {{/if}}
-
-
+  {{/if}}
 
 </div>

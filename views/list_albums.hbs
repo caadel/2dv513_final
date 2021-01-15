@@ -15,7 +15,7 @@
 
 <div class="list-container">
   {{#each data}}
-  <div class="list-item">
+  <a href="/albums/{{this.id}}" class="list-item">
     <span class="list-id">{{this.id}}</span>
     <span class="list-title">{{this.name}}</span>
     <span class="list-artist">{{this.artist}}</span>
@@ -23,7 +23,7 @@
     <span class="list-id">{{this.in_stock}}</span>
     <span class="list-album-date">{{this.release_date}}</span>
     <span class="list-id">{{this.num_of_songs}}</span>
-  </div>
+  </a>
   {{else}}
   <p class="empty">No content</p>
   {{/each}}

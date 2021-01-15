@@ -8,13 +8,17 @@ Router.get('/users', Controller.listUsers)
 Router.post('/users', Controller.handleUsersPost)
 
 Router.get('/albums', Controller.listAlbums)
+Router.get('/albums/:id', Controller.renderCreateAlbum)
 Router.post('/albums', Controller.handleAlbumsPost)
+Router.post('/albums/:id', Controller.updateAlbum)
 
 Router.get('/orders', Controller.listOrders)
 Router.post('/orders', Controller.handleOrdersPost)
 
 Router.get('/songs', Controller.listSongs)
+Router.get('/songs/:id', Controller.renderCreateSong)
 Router.post('/songs', Controller.handleSongsPost)
+Router.post('/songs/:id', Controller.updateSong)
 
 Router.get('/add/album', Controller.renderCreateAlbum)
 Router.post('/add/album', Controller.createAlbum)

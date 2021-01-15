@@ -88,16 +88,16 @@ function createTables() {
           connection.query(`SELECT EXISTS(SELECT 1 FROM orders) as empty`, (err, result) => {
             if (err) throw err
 
-            let emptyOrders = true
-            if (result[0].empty === 1) emptyOrders = false
+            let emptyDB = true
+            if (result[0].empty === 1) emptyDB = false
 
             // Insert data
-            let tables = ['albums', 'songs', 'users', 'orders']
-            for (const e of tables) {
-              let query = `LOAD DATA LOCAL INFILE '${e}.csv' INTO TABLE ${e} FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\r\n'`
+            if (emptyDB) {
+              let tables = ['albums', 'songs', 'users', 'orders']
+              for (const e of tables) {
+                let query = `LOAD DATA LOCAL INFILE '${e}.csv' INTO TABLE ${e} FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\r\n'`
 
-              // Don't insert orders if it's not empty
-              if (emptyOrders || e !== 'orders') {
+                // Don't insert orders if it's not empty
                 connection.query(query, (err, result) => {
                   if (err) throw err
                 })
@@ -165,7 +165,7 @@ Controller.listSongs = (req, res) => {
   connection.query(query, (err, result) => {
     for (let i = 0; i < result.length; i++) {
       let e = result[i]
-      e.length = new Date(e.length * 1000).toISOString().substr(14, 5)
+      if (e) e.length = new Date(e.length * 1000).toISOString().substr(14, 5)
     }
     res.render('list_songs', {
       title: 'Listings: Songs',
@@ -181,17 +181,59 @@ Controller.renderIndex = (req, res) => {
 }
 
 Controller.renderCreateAlbum = (req, res) => {
-  res.render('create', {
-    title: 'Add new Album',
-    album: true
-  })
+  if (req.params.id) {
+    update = true
+
+    connection.query(`SELECT * FROM albums WHERE id = ${req.params.id}`, (err, result) => {
+      if (err) throw err
+
+      let checkBoxChecked = false
+      if (result[0].in_stock === 1) checkBoxChecked = true
+
+      // fix date print
+      const offset = result[0].release_date.getTimezoneOffset()
+      result[0].release_date = new Date(result[0].release_date.getTime() - offset * 60 * 1000)
+        .toISOString()
+        .split('T')[0]
+
+      res.render('create_update', {
+        title: 'Update an Album',
+        album: true,
+        update: true,
+        data: result[0],
+        checked: checkBoxChecked
+      })
+    })
+  } else {
+    res.render('create_update', {
+      title: 'Add a new Album',
+      album: true,
+      update: false
+    })
+  }
 }
 
 Controller.renderCreateSong = (req, res) => {
-  res.render('create', {
-    title: 'Add new Song',
-    song: true
-  })
+  if (req.params.id) {
+    update = true
+
+    connection.query(`SELECT * FROM songs WHERE id = ${req.params.id}`, (err, result) => {
+      if (err) throw err
+
+      res.render('create_update', {
+        title: 'Update a Song',
+        song: true,
+        update: true,
+        data: result[0]
+      })
+    })
+  } else {
+    res.render('create_update', {
+      title: 'Add a new Song',
+      song: true,
+      update: false
+    })
+  }
 }
 
 Controller.renderUpdate = (req, res) => {
@@ -202,6 +244,33 @@ Controller.updateRow = (req, res) => {
   // TODO
 }
 
+Controller.updateSong = (req, res) => {
+  const query = `UPDATE songs 
+      SET album_id = ${req.body.album_id}, title = "${req.body.title}", length =${req.body.length}
+      WHERE id = ${req.params.id}`
+
+  connection.query(query, (err, result) => {
+    if (err) {
+      console.log(err)
+      res.render('create_update', {
+        title: 'Update a Song',
+        status: 'Could not update song!',
+        song: true,
+        update: true,
+        error: true
+      })
+    } else {
+      res.render('create_update', {
+        title: 'Update a Song',
+        status: 'Song updated!',
+        song: true,
+        update: true,
+        data: req.body
+      })
+    }
+  })
+}
+
 Controller.createSong = (req, res) => {
   // check for duplicate first
   const duplicateCheck = `SELECT COUNT(title) as count FROM songs WHERE album_id = "${req.body.album_id}" AND title = "${req.body.title}"`
@@ -210,7 +279,7 @@ Controller.createSong = (req, res) => {
       console.log(err)
       return
     } else if (result[0].count > 0) {
-      res.render('create', {
+      res.render('create_update', {
         title: 'Add new Song',
         status: 'Song already exists!',
         song: true,
@@ -221,20 +290,54 @@ Controller.createSong = (req, res) => {
       const query = `INSERT INTO songs (album_id, title, length) VALUES (${req.body.album_id}, "${req.body.title}", ${req.body.length})`
       connection.query(query, (err, result) => {
         if (err) {
-          console.log(err)
-          res.render('create', {
+          res.render('create_update', {
             title: 'Add new Song',
             status: 'Incorrect album id!',
             song: true,
             error: true
           })
         } else {
-          res.render('create', {
+          res.render('create_update', {
             title: 'Add new Song',
             status: 'Song added!',
             song: true
           })
         }
+      })
+    }
+  })
+}
+
+Controller.updateAlbum = (req, res) => {
+  let checkBoxChecked = false
+  if (req.body.in_stock === 1) checkBoxChecked = true
+
+  let stock = 0
+  if (req.body.in_stock) stock = 1
+
+  const query = `UPDATE albums 
+  SET price = ${req.body.price}, in_stock = ${stock}, name = "${req.body.name}", artist = "${req.body.artist}", release_date = "${req.body.release_date}"
+  WHERE id = ${req.params.id}`
+
+  connection.query(query, (err, result) => {
+    if (err) {
+      console.log(err)
+      res.render('create_update', {
+        title: 'Update an Album',
+        status: 'Could not update album!',
+        album: true,
+        update: true,
+        error: true,
+        checked: checkBoxChecked
+      })
+    } else {
+      res.render('create_update', {
+        title: 'Update an Album',
+        status: 'Song updated!',
+        album: true,
+        update: true,
+        data: req.body,
+        checked: checkBoxChecked
       })
     }
   })
@@ -250,7 +353,7 @@ Controller.createAlbum = (req, res) => {
       console.log(err)
       return
     } else if (result[0].count > 0) {
-      res.render('create', {
+      res.render('create_update', {
         title: 'Add new Album',
         status: 'Album already exists!',
         album: true,
@@ -258,18 +361,18 @@ Controller.createAlbum = (req, res) => {
       })
     } else {
       // if no dupe, insert new album
-      const query = `INSERT INTO albums (price, in_stock, name, artist, release_date) VALUES (${req.body.price}, ${stock}, "${req.body.name}", "${req.body.artist}", "${req.body.date}")`
+      const query = `INSERT INTO albums (price, in_stock, name, artist, release_date) VALUES (${req.body.price}, ${stock}, "${req.body.name}", "${req.body.artist}", "${req.body.release_date}")`
       connection.query(query, (err, result) => {
         if (err) {
           console.log(err)
-          res.render('create', {
+          res.render('create_update', {
             title: 'Add new Album',
             status: 'An error occured',
             album: true,
             error: 'An error occured!'
           })
         } else {
-          res.render('create', {
+          res.render('create_update', {
             title: 'Add new Album',
             status: 'Album added!',
             album: true

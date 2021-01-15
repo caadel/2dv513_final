@@ -1,5 +1,4 @@
 const MySQL = require('mysql')
-const Path = require('path')
 const Controller = {}
 
 let databaseName = process.argv.slice(2, 3) + ''
@@ -74,34 +73,41 @@ function createTables() {
     FOREIGN KEY (album_id) REFERENCES albums(id)
     )`
 
+  // Create all tables one after the other
   connection.query(initAlbums, (err, result) => {
     if (err) throw err
-  })
-
-  connection.query(initSongs, (err, result) => {
-    if (err) throw err
-  })
-
-  connection.query(initUsers, (err, result) => {
-    if (err) throw err
-  })
-
-  connection.query(initOrders, (err, result) => {
-    if (err) throw err
-  })
-
-  // Insert data
-  let tables = ['albums', 'songs', 'users', 'orders']
-  for (const e of tables) {
-    let query = `LOAD DATA LOCAL INFILE '${e}.csv'
-    INTO TABLE ${e}
-    FIELDS TERMINATED BY ','
-    ENCLOSED BY '"'
-    LINES TERMINATED BY '\r\n'`
-    connection.query(query, (err, result) => {
+    connection.query(initSongs, (err, result) => {
       if (err) throw err
+      connection.query(initUsers, (err, result) => {
+        if (err) throw err
+        connection.query(initOrders, (err, result) => {
+          if (err) throw err
+          // When all tables have been created, start inserting data
+
+          // First check for empty table
+          connection.query(`SELECT EXISTS(SELECT 1 FROM orders) as empty`, (err, result) => {
+            if (err) throw err
+
+            let emptyOrders = true
+            if (result[0].empty === 1) emptyOrders = false
+
+            // Insert data
+            let tables = ['albums', 'songs', 'users', 'orders']
+            for (const e of tables) {
+              let query = `LOAD DATA LOCAL INFILE '${e}.csv' INTO TABLE ${e} FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\r\n'`
+
+              // Don't insert orders if it's not empty
+              if (emptyOrders || e !== 'orders') {
+                connection.query(query, (err, result) => {
+                  if (err) throw err
+                })
+              }
+            }
+          })
+        })
+      })
     })
-  }
+  })
 }
 
 Controller.listUsers = (req, res) => {

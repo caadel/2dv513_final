@@ -148,6 +148,17 @@ Controller.listAlbums = (req, res) => {
 
 Controller.listOrders = (req, res) => {
   connection.query('SELECT * FROM orders', (err, result) => {
+    for (let i = 0; i < result.length; i++) {
+      let e = result[i]
+      // fix date print
+      // fix boolean (0 = true, 1 = false)
+      e.payed_status ? (e.payed_status = 'Yes') : (e.payed_status = 'No')
+      const offset = e.order_date.getTimezoneOffset()
+      e.order_date = new Date(e.order_date.getTime() - offset * 60 * 1000)
+      .toISOString()
+      .slice(0, 19)
+      .replace(/T/g, ' ')
+    }
     res.render('list_orders', {
       title: 'Listings: Orders',
       data: result

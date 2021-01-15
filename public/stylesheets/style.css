@@ -149,7 +149,7 @@ a.list-item:hover {
 }
 
 .list-id {
-  width: 60px;
+  width: 80px;
   text-align: center;
 }
 
@@ -173,6 +173,11 @@ a.list-item:hover {
 
 .list-album-date {
   width: 120px;
+  text-align: center;
+}
+
+.list-order-date {
+  width: 160px;
   text-align: center;
 }
 

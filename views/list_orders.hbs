@@ -2,9 +2,28 @@
   <a class="home" href="/">Home</a>
 </nav>
 
-<div class="list-headings">
-
+<div class="list-headings list-item">
+  <span class="list-id">ID</span>
+  <span class="list-id">User ID</span>
+  <span class="list-id">Album ID</span>
+  <span class="list-order-date">Order date</span>
+  <span class="list-title">Ship status</span>
+  <span class="list-title">Payment status</span>
+  <span class="list-id"># of albums</span>
 </div>
-<div class="list-container">
 
+<div class="list-container">
+  {{#each data}}
+  <div class="list-item">
+    <span class="list-id">{{this.id}}</span>
+    <span class="list-id">{{this.user_id}}</span>
+    <span class="list-id">{{this.album_id}}</span>
+    <span class="list-order-date">{{this.order_date}}</span>
+    <span class="list-title">{{this.ship_status}}</span>
+    <span class="list-title">{{this.payed_status}}</span>
+    <span class="list-id">{{this.quantity}}</span>
+  </div>
+  {{else}}
+  <p class="empty">No content</p>
+  {{/each}}
 </div>

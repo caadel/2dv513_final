@@ -1,4 +1,5 @@
 const MySQL = require('mysql')
+const Path = require('path')
 const Controller = {}
 
 let databaseName = process.argv.slice(2, 3) + ''
@@ -19,19 +20,18 @@ const connection = MySQL.createConnection({
 
       connection.query(`CREATE DATABASE IF NOT EXISTS ${databaseName}`, (err, result) => {
         if (err) throw err
-        console.log(`Connected to database '${databaseName}'`)
+
+        connection.changeUser({ user: 'root', database: databaseName }, (err, result) => {
+          if (err) throw err
+          console.log(`Connected to database '${databaseName}'`)
+          createTables()
+        })
       })
     })
   } catch (error) {
     console.log('MySQL error, could not create connection!')
     process.exit()
   }
-
-  connection.changeUser({ user: 'root', database: databaseName }, (err, result) => {
-    if (err) throw err
-  })
-
-  createTables()
 })()
 
 function createTables() {
@@ -90,7 +90,18 @@ function createTables() {
     if (err) throw err
   })
 
-  // insertData()
+  // Insert data
+  let tables = ['albums', 'songs', 'users', 'orders']
+  for (const e of tables) {
+    let query = `LOAD DATA LOCAL INFILE '${e}.csv'
+    INTO TABLE ${e}
+    FIELDS TERMINATED BY ','
+    ENCLOSED BY '"'
+    LINES TERMINATED BY '\r\n'`
+    connection.query(query, (err, result) => {
+      if (err) throw err
+    })
+  }
 }
 
 Controller.listUsers = (req, res) => {
@@ -270,7 +281,5 @@ Controller.handleAlbumsPost = (req, res) => {}
 Controller.handleOrdersPost = (req, res) => {}
 
 Controller.handleSongsPost = (req, res) => {}
-
-function insertData() {}
 
 module.exports = Controller

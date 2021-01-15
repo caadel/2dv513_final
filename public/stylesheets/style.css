@@ -144,6 +144,7 @@ a.list-item:hover {
   outline: 3px solid black;
 }
 
+/* Some widths for list columns */
 .list-item {
   background-color: rgb(240, 240, 240);
 }
@@ -177,7 +178,7 @@ a.list-item:hover {
 }
 
 .list-order-date {
-  width: 160px;
+  width: 165px;
   text-align: center;
 }
 

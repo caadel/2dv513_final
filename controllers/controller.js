@@ -94,30 +94,66 @@ function createTables() {
 }
 
 Controller.listUsers = (req, res) => {
-  res.render('list', {
-    title: 'Listings',
-    users: 'data'
+  connection.query('SELECT * FROM users', (err, result) => {
+    res.render('list_users', {
+      title: 'Listings: Users',
+      data: result
+    })
   })
 }
 
 Controller.listAlbums = (req, res) => {
-  res.render('list', {
-    title: 'Listings',
-    albums: 'data'
+  const query = `SELECT id, name, artist, price, in_stock, release_date,
+    (SELECT COUNT(id) 
+     FROM songs 
+     WHERE albums.id = album_id) as num_of_songs
+  FROM albums`
+
+  connection.query(query, (err, result) => {
+    for (let i = 0; i < result.length; i++) {
+      let e = result[i]
+      // fix boolean (0 = true, 1 = false)
+      e.in_stock ? (e.in_stock = 'Yes') : (e.in_stock = 'No')
+
+      // fix date print
+      const offset = e.release_date.getTimezoneOffset()
+      e.release_date = new Date(e.release_date.getTime() - offset * 60 * 1000)
+        .toISOString()
+        .split('T')[0]
+    }
+
+    res.render('list_albums', {
+      title: 'Listings: Albums',
+      data: result
+    })
   })
 }
 
 Controller.listOrders = (req, res) => {
-  res.render('list', {
-    title: 'Listings',
-    orders: 'data'
+  connection.query('SELECT * FROM orders', (err, result) => {
+    res.render('list_orders', {
+      title: 'Listings: Orders',
+      data: result
+    })
   })
 }
 
 Controller.listSongs = (req, res) => {
-  res.render('list', {
-    title: 'Listings',
-    songs: 'data'
+  const query = `SELECT songs.id, songs.title, songs.length, albums.artist, albums.name AS album_name, songs.album_id
+  FROM albums
+  INNER JOIN songs
+  ON albums.id = songs.album_id
+  ORDER BY songs.album_id ASC, songs.id ASC`
+
+  connection.query(query, (err, result) => {
+    for (let i = 0; i < result.length; i++) {
+      let e = result[i]
+      e.length = new Date(e.length * 1000).toISOString().substr(14, 5)
+    }
+    res.render('list_songs', {
+      title: 'Listings: Songs',
+      data: result
+    })
   })
 }
 
@@ -226,6 +262,14 @@ Controller.createAlbum = (req, res) => {
     }
   })
 }
+
+Controller.handleUsersPost = (req, res) => {}
+
+Controller.handleAlbumsPost = (req, res) => {}
+
+Controller.handleOrdersPost = (req, res) => {}
+
+Controller.handleSongsPost = (req, res) => {}
 
 function insertData() {}
 

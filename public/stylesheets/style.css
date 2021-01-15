@@ -113,6 +113,75 @@ nav a:hover {
   background-color: rgb(223, 223, 223);
 }
 
+/* ======== LISTINGS ======== */
+.list-container {
+  padding-bottom: 25px;
+}
+
+.list-item {
+  display: flex;
+}
+
+.list-item span {
+  padding: 10px;
+  border-right: 2px solid black;
+  box-sizing: border-box;
+}
+
+.list-item span:last-child {
+  border: 0;
+}
+
+.list-container div:nth-child(even) {
+  background-color: rgb(180, 180, 180);
+}
+
+.list-item {
+  background-color: rgb(240, 240, 240);
+}
+
+.list-id {
+  width: 60px;
+  text-align: center;
+}
+
+.list-title {
+  flex-grow: 1;
+  width: 200px;
+}
+
+.list-time {
+  text-align: center;
+  width: 80px;
+}
+
+.list-artist {
+  width: 150px;
+}
+
+.list-album-name {
+  width: 160px;
+}
+
+.list-album-date {
+  width: 120px;
+  text-align: center;
+}
+
+.list-headings {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  border-bottom: 2px solid black;
+  font-weight: bold;
+  background-color: rgb(65, 65, 65);
+  color: white;
+}
+
+.list-headings span {
+  text-align: center;
+}
+
 /* ======== CREATE PAGE ======== */
 .create-edit-form {
   width: 420px;

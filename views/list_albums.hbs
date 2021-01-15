@@ -1,0 +1,30 @@
+<nav>
+  <a class="home" href="/">Home</a>
+  <a href="/add/album">Add new album</a>
+</nav>
+
+<div class="list-headings list-item">
+  <span class="list-id">ID</span>
+  <span class="list-title">Album Name</span>
+  <span class="list-artist">Artist</span>
+  <span class="list-id">Price</span>
+  <span class="list-id">In stock</span>
+  <span class="list-album-date">Release Date</span>
+  <span class="list-id"># of songs</span>
+</div>
+
+<div class="list-container">
+  {{#each data}}
+  <div class="list-item">
+    <span class="list-id">{{this.id}}</span>
+    <span class="list-title">{{this.name}}</span>
+    <span class="list-artist">{{this.artist}}</span>
+    <span class="list-id">{{this.price}}kr</span>
+    <span class="list-id">{{this.in_stock}}</span>
+    <span class="list-album-date">{{this.release_date}}</span>
+    <span class="list-id">{{this.num_of_songs}}</span>
+  </div>
+  {{else}}
+  <p class="empty">No content</p>
+  {{/each}}
+</div>

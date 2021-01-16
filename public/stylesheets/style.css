@@ -56,7 +56,8 @@ nav {
   display: flex;
 }
 
-nav a {
+nav a,
+nav form {
   padding: 10px 20px;
   background-color: rgb(231, 231, 231);
   border-radius: 0;
@@ -64,6 +65,13 @@ nav a {
   display: inline-block;
   margin-bottom: 10px;
   margin-right: 4px;
+  line-height: 20px;
+}
+
+.id-form input {
+  width: 30px;
+  border-radius: 0;
+  border: 1px solid rgb(207, 207, 207);
 }
 
 nav a:hover {

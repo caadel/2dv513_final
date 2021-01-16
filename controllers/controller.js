@@ -167,11 +167,24 @@ Controller.listOrders = (req, res) => {
 }
 
 Controller.listSongs = (req, res) => {
-  const query = `SELECT songs.id, songs.title, songs.length, albums.artist, albums.name AS album_name, songs.album_id
+  listSongs(res)
+}
+
+function listSongs(res, albumID) {
+  let query = `SELECT songs.id, songs.title, songs.length, albums.artist, albums.name AS album_name, songs.album_id
   FROM albums
   INNER JOIN songs
   ON albums.id = songs.album_id
   ORDER BY songs.album_id ASC, songs.id ASC`
+
+  if (albumID) {
+    query = `SELECT songs.id, songs.title, songs.length, albums.artist, albums.name AS album_name, songs.album_id
+    FROM albums
+    INNER JOIN songs
+    ON albums.id = songs.album_id
+    WHERE albums.id = ${albumID}
+    ORDER BY songs.album_id ASC, songs.id ASC`
+  }
 
   connection.query(query, (err, result) => {
     for (let i = 0; i < result.length; i++) {
@@ -180,7 +193,8 @@ Controller.listSongs = (req, res) => {
     }
     res.render('list_songs', {
       title: 'Listings: Songs',
-      data: result
+      data: result,
+      albumID: albumID
     })
   })
 }
@@ -400,6 +414,11 @@ Controller.handleAlbumsPost = (req, res) => {}
 
 Controller.handleOrdersPost = (req, res) => {}
 
-Controller.handleSongsPost = (req, res) => {}
+Controller.handleSongsPost = (req, res) => {
+  if (req.body.album_id) {
+    if (req.body.album_id.length > 0) listSongs(res, req.body.album_id)
+    else Controller.listSongs(req, res)
+  } else Controller.listSongs(req, res)
+}
 
 module.exports = Controller

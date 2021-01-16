@@ -118,6 +118,7 @@ Controller.listUsers = (req, res) => {
     })
   })
 }
+
 Controller.listAlbums = (req, res) => {
   listAlbums(res)
 }
@@ -129,16 +130,10 @@ function listAlbums(res, sort_opt) {
      WHERE albums.id = album_id) as num_of_songs
      FROM albums`
 
-  if (sort_opt) {
-    query = `SELECT id, name, artist, price, in_stock, release_date, 
-    (SELECT COUNT(id) 
-    FROM songs 
-    WHERE albums.id = album_id) as num_of_songs
-    FROM albums
-    ORDER BY price ${sort_opt}`
-  }
+  if (sort_opt) query += ` ORDER BY price ${sort_opt}`
 
   connection.query(query, (err, result) => {
+    let totalSongs = 0
     for (let i = 0; i < result.length; i++) {
       let e = result[i]
       // fix boolean (0 = true, 1 = false)
@@ -149,11 +144,21 @@ function listAlbums(res, sort_opt) {
       e.release_date = new Date(e.release_date.getTime() - offset * 60 * 1000)
         .toISOString()
         .split('T')[0]
+
+      // count for avg num of songs
+      totalSongs += e.num_of_songs
     }
 
-    res.render('list_albums', {
-      title: 'Listings: Albums',
-      data: result
+    let avgNumOfSongs = totalSongs / result.length
+
+    const queryAvgPrice = `SELECT AVG(albums.price) AS Average_Cost_Albums FROM albums`
+    connection.query(queryAvgPrice, (err, result2) => {
+      res.render('list_albums', {
+        title: 'Listings: Albums',
+        data: result,
+        avg_price: result2[0].Average_Cost_Albums,
+        avg_songs: avgNumOfSongs
+      })
     })
   })
 }

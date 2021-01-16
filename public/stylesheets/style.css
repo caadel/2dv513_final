@@ -1,6 +1,12 @@
 /* ======== GENERAL ======== */
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code&display=swap');
 
+:root {
+  --dark-gray: rgb(65, 65, 65);
+  --medium-gray: rgb(180, 180, 180);
+  --light-gray: rgb(240, 240, 240);
+}
+
 html {
   height: 100%;
   background-color: white;
@@ -93,6 +99,34 @@ nav a:hover,
   line-height: 10px;
 }
 
+/* ======== SIDEBAR ======== */
+.sidebar {
+  display: block;
+  position: absolute;
+  left: -260px;
+  width: 180px;
+  background-color: var(--light-gray);
+}
+
+.sidebar .heading {
+  text-align: center;
+  padding: 10px 0;
+  width: 100%;
+  border-bottom: 1px solid black;
+  background-color: var(--dark-gray);
+  color: white;
+  font-weight: bold;
+}
+
+.sidebar span {
+  display: block;
+  border-top: 1px solid black;
+  padding: 7px 5px;
+  box-sizing: border-box;
+  width: 100%;
+  font-size: 13px;
+}
+
 /* ======== STATUS ======== */
 .status {
   padding: 20px;
@@ -155,11 +189,11 @@ nav a:hover,
 }
 
 .list-container div:nth-child(even) {
-  background-color: rgb(180, 180, 180);
+  background-color: var(--medium-gray);
 }
 
 .list-container a:nth-child(even) {
-  background-color: rgb(180, 180, 180);
+  background-color: var(--medium-gray);
 }
 
 a.list-item:hover {
@@ -168,7 +202,7 @@ a.list-item:hover {
 
 /* Some widths for list columns */
 .list-item {
-  background-color: rgb(240, 240, 240);
+  background-color: var(--light-gray);
 }
 
 .list-id {
@@ -210,7 +244,7 @@ a.list-item:hover {
   top: 0;
   border-bottom: 2px solid black;
   font-weight: bold;
-  background-color: rgb(65, 65, 65);
+  background-color: var(--dark-gray);
   color: white;
 }
 

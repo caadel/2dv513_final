@@ -5,16 +5,16 @@
 <div class="list-headings list-item">
   <span class="list-id">ID</span>
   <span class="list-title">Name</span>
-  <span class="list-title">Password</span>
   <span class="list-title">Email</span>
+  <span class="list-id2"># of albums ordered</span>
 </div>
 <div class="list-container">
   {{#each data}}
   <div class="list-item">
     <span class="list-id">{{this.id}}</span>
     <span class="list-title">{{this.name}}</span>
-    <span class="list-title">{{this.password}}</span>
     <span class="list-title">{{this.email}}</span>
+    <span class="list-id2">{{this.num_of_albums_ordered}}</span>
   </div>
   {{else}}
   <p class="empty">No content</p>

@@ -111,7 +111,17 @@ function createTables() {
 }
 
 Controller.listUsers = (req, res) => {
-  connection.query('SELECT * FROM users', (err, result) => {
+  const query = `SELECT users.id, users.name, users.email, 
+  (SELECT SUM(orders.quantity)
+   FROM orders
+   WHERE orders.user_id = users.id) as num_of_albums_ordered 
+  FROM users`
+
+  connection.query(query, (err, result) => {
+    for (const e of result) {
+      if (e.num_of_albums_ordered === null) e.num_of_albums_ordered = 0
+    }
+
     res.render('list_users', {
       title: 'Listings: Users',
       data: result

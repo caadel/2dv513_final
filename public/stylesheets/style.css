@@ -210,6 +210,11 @@ a.list-item:hover {
   text-align: center;
 }
 
+.list-id2 {
+  width: 100px;
+  text-align: center;
+}
+
 .list-title {
   flex-grow: 1;
   width: 200px;

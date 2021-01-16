@@ -122,36 +122,20 @@ Controller.listAlbums = (req, res) => {
   listAlbums(res)
 }
 
-function listAlbums (res, sort_opt) {
+function listAlbums(res, sort_opt) {
   let query = `SELECT id, name, artist, price, in_stock, release_date,
     (SELECT COUNT(id) 
      FROM songs 
      WHERE albums.id = album_id) as num_of_songs
      FROM albums`
 
-     console.log(sort_opt)
-  if(sort_opt === 'ASC') {
+  if (sort_opt) {
     query = `SELECT id, name, artist, price, in_stock, release_date, 
     (SELECT COUNT(id) 
     FROM songs 
     WHERE albums.id = album_id) as num_of_songs
     FROM albums
-    ORDER BY price ASC`
-  }
-  else if(sort_opt === 'DESC') {
-    query = `SELECT id, name, artist, price, in_stock, release_date,
-    (SELECT COUNT(id) 
-     FROM songs 
-     WHERE albums.id = album_id) as num_of_songs
-     FROM albums
-     ORDER BY price DESC`
-  }
-  else {
-    query = `SELECT id, name, artist, price, in_stock, release_date,
-    (SELECT COUNT(id) 
-     FROM songs 
-     WHERE albums.id = album_id) as num_of_songs
-    FROM albums`
+    ORDER BY price ${sort_opt}`
   }
 
   connection.query(query, (err, result) => {
@@ -439,10 +423,9 @@ Controller.createAlbum = (req, res) => {
 Controller.handleUsersPost = (req, res) => {}
 
 Controller.handleAlbumsPost = (req, res) => {
-  console.log(req.body.sort_opt)
   if (req.body.sort_opt) {
-    if (req.body.sort_opt === 'ASC' || req.body.sort_opt === 'DESC') listAlbums(res, req.body.sort_opt)
-    else Controller.listAlbums(req, res)
+    if (req.body.sort_opt === 'ID') Controller.listAlbums(req, res)
+    else listAlbums(res, req.body.sort_opt)
   } else Controller.listAlbums(req, res)
 }
 

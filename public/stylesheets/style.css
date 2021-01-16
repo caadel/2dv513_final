@@ -57,7 +57,8 @@ nav {
 }
 
 nav a,
-nav form {
+nav form,
+.list-order-button input[type='submit'] {
   padding: 10px 20px;
   background-color: rgb(231, 231, 231);
   border-radius: 0;
@@ -74,9 +75,22 @@ nav form {
   border: 1px solid rgb(207, 207, 207);
 }
 
-nav a:hover {
+nav a:hover,
+.list-order-button input[type='submit']:hover {
   cursor: pointer;
   border: 2px solid rgb(112, 112, 112);
+}
+
+.list-order-button {
+  padding: 0;
+  border-radius: 0;
+  border: 0;
+}
+
+.list-order-button input[type='submit'] {
+  height: 100%;
+  font-size: 14px;
+  line-height: 10px;
 }
 
 /* ======== STATUS ======== */
@@ -202,11 +216,6 @@ a.list-item:hover {
 
 .list-headings span {
   text-align: center;
-}
-
-.list-order-button {
-  width: 120px;
-
 }
 
 /* ======== CREATE PAGE ======== */

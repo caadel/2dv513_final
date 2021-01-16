@@ -204,6 +204,11 @@ a.list-item:hover {
   text-align: center;
 }
 
+.list-order-button {
+  width: 120px;
+
+}
+
 /* ======== CREATE PAGE ======== */
 .create-edit-form {
   width: 420px;

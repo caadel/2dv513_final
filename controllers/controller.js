@@ -118,13 +118,35 @@ Controller.listUsers = (req, res) => {
     })
   })
 }
-
 Controller.listAlbums = (req, res) => {
-  const query = `SELECT id, name, artist, price, in_stock, release_date,
+  listAlbums(res)
+}
+
+function listAlbums (res, sort_opt) {
+  let query = `SELECT id, name, artist, price, in_stock, release_date,
     (SELECT COUNT(id) 
      FROM songs 
      WHERE albums.id = album_id) as num_of_songs
-  FROM albums`
+     FROM albums`
+
+     console.log(sort_opt)
+  if(sort_opt === 'ASC') {
+    query = `SELECT id, name, artist, price, in_stock, release_date
+    FROM albums
+    ORDER BY price ASC`
+  }
+  else if(sort_opt === 'DESC') {
+    query = `SELECT id, name, artist, price, in_stock, release_date
+    FROM albums
+    ORDER BY price DESC`
+  }
+  else {
+    query = `SELECT id, name, artist, price, in_stock, release_date,
+    (SELECT COUNT(id) 
+     FROM songs 
+     WHERE albums.id = album_id) as num_of_songs
+    FROM albums`
+  }
 
   connection.query(query, (err, result) => {
     for (let i = 0; i < result.length; i++) {
@@ -410,7 +432,13 @@ Controller.createAlbum = (req, res) => {
 
 Controller.handleUsersPost = (req, res) => {}
 
-Controller.handleAlbumsPost = (req, res) => {}
+Controller.handleAlbumsPost = (req, res) => {
+  console.log(req.body.sort_opt)
+  if (req.body.sort_opt) {
+    if (req.body.sort_opt === 'ASC' || req.body.sort_opt === 'DESC') listAlbums(res, req.body.sort_opt)
+    else Controller.listAlbums(req, res)
+  } else Controller.listAlbums(req, res)
+}
 
 Controller.handleOrdersPost = (req, res) => {}
 

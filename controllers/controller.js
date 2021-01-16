@@ -131,14 +131,20 @@ function listAlbums (res, sort_opt) {
 
      console.log(sort_opt)
   if(sort_opt === 'ASC') {
-    query = `SELECT id, name, artist, price, in_stock, release_date
+    query = `SELECT id, name, artist, price, in_stock, release_date, 
+    (SELECT COUNT(id) 
+    FROM songs 
+    WHERE albums.id = album_id) as num_of_songs
     FROM albums
     ORDER BY price ASC`
   }
   else if(sort_opt === 'DESC') {
-    query = `SELECT id, name, artist, price, in_stock, release_date
-    FROM albums
-    ORDER BY price DESC`
+    query = `SELECT id, name, artist, price, in_stock, release_date,
+    (SELECT COUNT(id) 
+     FROM songs 
+     WHERE albums.id = album_id) as num_of_songs
+     FROM albums
+     ORDER BY price DESC`
   }
   else {
     query = `SELECT id, name, artist, price, in_stock, release_date,

@@ -2,12 +2,22 @@
   <a class="home" href="/">Home</a>
 </nav>
 
+<nav class="sidebar">
+  <div class="heading">Highest spenders</div>
+  {{#each data_spenders}}
+  <span>{{this.name}}: {{this.amount_spent}}kr</span>
+  {{else}}
+  <p class="empty">No content</p>
+  {{/each}}
+</nav>
+
 <div class="list-headings list-item">
   <span class="list-id">ID</span>
   <span class="list-title">Name</span>
   <span class="list-title">Email</span>
   <span class="list-id2"># of albums ordered</span>
 </div>
+
 <div class="list-container">
   {{#each data}}
   <div class="list-item">

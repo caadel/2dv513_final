@@ -103,7 +103,7 @@ nav a:hover,
 .sidebar {
   display: block;
   position: absolute;
-  left: -260px;
+  left: -220px;
   width: 180px;
   background-color: var(--light-gray);
 }

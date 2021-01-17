@@ -91,18 +91,33 @@ function createTables() {
             let emptyDB = true
             if (result[0].empty === 1) emptyDB = false
 
-            // Insert data
+            // If the database (specifically orders table) is empty, init all tables with data
             if (emptyDB) {
               let tables = ['albums', 'songs', 'users', 'orders']
               for (const e of tables) {
                 let query = `LOAD DATA LOCAL INFILE '${e}.csv' INTO TABLE ${e} FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\r\n'`
 
-                // Don't insert orders if it's not empty
                 connection.query(query, (err, result) => {
                   if (err) throw err
                 })
               }
             }
+
+            // Finally, create views
+            let view1 = `CREATE OR REPLACE VIEW highestSpenders AS 
+                              SELECT users.id, users.name, users.email,
+                              (SELECT SUM(orders.quantity * 
+                                            (SELECT albums.price 
+                                             FROM albums 
+                                             WHERE albums.id = orders.album_id))
+                               FROM orders
+                               WHERE users.id = orders.user_id) as amount_spent
+                            FROM users
+                            ORDER BY amount_spent DESC
+                            LIMIT 3`
+            connection.query(view1, (err, result) => {
+              if (err) throw err
+            })
           })
         })
       })
@@ -111,20 +126,25 @@ function createTables() {
 }
 
 Controller.listUsers = (req, res) => {
-  const query = `SELECT users.id, users.name, users.email, 
+  const usersQuery = `SELECT users.id, users.name, users.email, 
   (SELECT SUM(orders.quantity)
    FROM orders
    WHERE orders.user_id = users.id) as num_of_albums_ordered 
   FROM users`
 
-  connection.query(query, (err, result) => {
+  const spendersQuery = `SELECT name, amount_spent FROM highestspenders`
+
+  connection.query(usersQuery, (err, result) => {
     for (const e of result) {
       if (e.num_of_albums_ordered === null) e.num_of_albums_ordered = 0
     }
 
-    res.render('list_users', {
-      title: 'Listings: Users',
-      data: result
+    connection.query(spendersQuery, (err, result2) => {
+      res.render('list_users', {
+        title: 'Listings: Users',
+        data: result,
+        data_spenders: result2
+      })
     })
   })
 }

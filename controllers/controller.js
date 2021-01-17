@@ -194,7 +194,15 @@ function listAlbums(res, sort_opt) {
 }
 
 Controller.listOrders = (req, res) => {
-  connection.query('SELECT * FROM orders', (err, result) => {
+  listOrders(res)
+}
+
+function listOrders(res, userID) {
+  let query = 'SELECT * FROM orders'
+
+  if (userID) query += ` WHERE user_id = ${userID}`
+
+  connection.query(query, (err, result) => {
     for (let i = 0; i < result.length; i++) {
       let e = result[i]
       // fix date print
@@ -208,7 +216,8 @@ Controller.listOrders = (req, res) => {
     }
     res.render('list_orders', {
       title: 'Listings: Orders',
-      data: result
+      data: result,
+      userID: userID
     })
   })
 }
@@ -455,8 +464,6 @@ Controller.createAlbum = (req, res) => {
   })
 }
 
-Controller.handleUsersPost = (req, res) => {}
-
 Controller.handleAlbumsPost = (req, res) => {
   if (req.body.sort_opt) {
     if (req.body.sort_opt === 'ID') Controller.listAlbums(req, res)
@@ -464,7 +471,12 @@ Controller.handleAlbumsPost = (req, res) => {
   } else Controller.listAlbums(req, res)
 }
 
-Controller.handleOrdersPost = (req, res) => {}
+Controller.handleOrdersPost = (req, res) => {
+  if (req.body.user_id) {
+    if (req.body.user_id.length > 0) listOrders(res, req.body.user_id)
+    else Controller.listOrders(req, res)
+  } else Controller.listOrders(req, res)
+}
 
 Controller.handleSongsPost = (req, res) => {
   if (req.body.album_id) {

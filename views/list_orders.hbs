@@ -1,5 +1,13 @@
 <nav>
   <a class="home" href="/">Home</a>
+  <form class="id-form" action="" method="POST">
+    Filter by user id
+    <input type="number" name="user_id" value="{{userID}}">
+  </form>
+  <form class="list-order-button" action="" method="POST">
+    <input type="submit" class="list-order-button" value="Show all"></input>
+    <input type="text" name="show_all" value="ALL" hidden>
+  </form>
 </nav>
 
 <div class="list-headings list-item">

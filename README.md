@@ -6,7 +6,7 @@ This web interface application is a web server built using JavaScript with Node.
 
 To be able to run this application, several programs need to be downloaded and installed on the system.
 
-1. Install a MySQL server ([MAMP](https://www.mamp.info/en/downloads/) was used during development)
+1. Install and start a MySQL server ([MAMP](https://www.mamp.info/en/downloads/) was used during development)
 2. Install [Node](https://nodejs.org/en/) (which includes the package manager [NPM](https://www.npmjs.com/))
 3. Extract the "src.zip" file included in the submission files
 

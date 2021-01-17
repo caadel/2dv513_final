@@ -5,7 +5,6 @@ const Controller = require('../controllers/controller.js')
 Router.get('/', Controller.renderIndex)
 
 Router.get('/users', Controller.listUsers)
-Router.post('/users', Controller.handleUsersPost)
 
 Router.get('/albums', Controller.listAlbums)
 Router.get('/albums/:id', Controller.renderCreateAlbum)
